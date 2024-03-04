@@ -1,0 +1,7 @@
+{
+  "name": "NEXT.cms",
+  "packageManager": "yarn@4.0.2",
+  "dependencies": {
+    "express": "^4.18.3"
+  }
+}
