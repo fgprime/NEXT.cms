@@ -1,8 +1,8 @@
 const request = require("supertest");
 const app = require("../src/app.js");
 
-describe("Root path", () => {
-  test("It should response the GET method", (done) => {
+describe("Root path with static content", () => {
+  it("should response the GET request", (done) => {
     request(app)
       .get("/")
       .then((response) => {
@@ -10,10 +10,8 @@ describe("Root path", () => {
         done();
       });
   });
-});
 
-describe("Root path: Static content", () => {
-  it("Response with html", async () => {
+  it("should response with html", async () => {
     const response = await request(app).get("/");
 
     expect(response.text).toMatch(/html/);
@@ -25,10 +23,6 @@ describe("Structure: GET response", () => {
   it("should not accept an invalid path", async () => {
     const response = await request(app).get("/structure/example.json");
 
-    console.log(response);
-
-    // const json = JSON.parse(await response.text);
-
     expect(response.status).toEqual(404);
     expect(response.header["content-type"]).toMatch(/json/);
     expect(response.text).toMatch(/File not found/);
@@ -36,7 +30,6 @@ describe("Structure: GET response", () => {
 
   it("should return a json file", async () => {
     const response = await request(app).get("/structure/example");
-
     const json = JSON.parse(response.text);
 
     expect(response.status).toEqual(200);
@@ -48,8 +41,8 @@ describe("Structure: GET response", () => {
 describe("Structure: POST request", () => {
   it("should update a structure", async () => {
     const data = { value: "yes" };
-    const response = await request(app).post(`/structure/test`).send(data);
 
+    const response = await request(app).post(`/structure/test`).send(data);
     const json = JSON.parse(response.text);
 
     expect(response.status).toEqual(201);
