@@ -6,6 +6,13 @@ const path = require("path");
 
 const file = require("./file");
 
+const logger = require("./logger");
+
+logger.log({
+  level: "info",
+  message: "Application start",
+});
+
 app.use(express.static("static"));
 app.use(express.json());
 

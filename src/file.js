@@ -1,5 +1,6 @@
 const fs = require("fs").promises;
-const path = require("path");
+
+const logger = require("./logger");
 
 const DATA_PATH = "data";
 
@@ -8,7 +9,7 @@ const fileModule = {
     try {
       return await fs.readFile(`${DATA_PATH}/${path}.json`);
     } catch (err) {
-      console.log(err);
+      logger.error(`Error reading file ${path}`, err);
       return false;
     }
   },
@@ -18,7 +19,7 @@ const fileModule = {
       await fs.writeFile(`${DATA_PATH}/${path}.json`, content);
       return true;
     } catch (err) {
-      console.log(err);
+      logger.error(`Error writing file ${path}`, err);
       return false;
     }
   },
