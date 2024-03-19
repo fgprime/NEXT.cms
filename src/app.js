@@ -4,6 +4,8 @@ const app = express();
 const fs = require("fs");
 const path = require("path");
 
+const file = require("./file");
+
 app.use(express.static("static"));
 app.use(express.json());
 
@@ -21,18 +23,15 @@ app.get("/structure/:path*", (req, res) => {
 
   if (guard(pathParam, res)) return;
 
-  if (!pathParam || pathParam.includes(".")) {
-    res.status(404).send({ status: "notok", error: "File not found" });
-    return;
-  }
+  //TODO: improve error handling
 
-  fs.readFile(`data/structure/${pathParam}.json`, (err, data) => {
-    if (err) {
-      res.status(404).send({ status: "notok", error: "File not found" });
-      return;
-    }
+  const data = file.read(`structure/${pathParam}`);
+
+  if (data) {
     res.status(200).send(data);
-  });
+  } else {
+    res.status(404).send({ status: "notok", error: "File not found" });
+  }
 });
 
 app.post("/structure/:path*", (req, res) => {
@@ -43,15 +42,13 @@ app.post("/structure/:path*", (req, res) => {
   if (guard(pathParam, res)) return;
   //TODO: verify json content
 
-  fs.writeFile("data/structure/hubert.json", content, (err) => {
-    if (err) {
-      console.log(err);
-      res.status(404).send({ status: "notok", error: "File not found" });
-      return;
-    }
+  const data = file.read(`structure/${pathParam}`);
 
+  if (file.write(`structure/${pathParam}`)) {
     res.status(201).send({ status: "ok", content: JSON.parse(content) });
-  });
+  } else {
+    res.status(404).send({ status: "notok", error: "File not found" });
+  }
 });
 
 module.exports = app;
