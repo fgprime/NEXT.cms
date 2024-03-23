@@ -36,6 +36,26 @@ describe("Structure: GET response", () => {
     expect(response.header["content-type"]).toMatch(/json/);
     expect(json).toBeDefined();
   });
+
+  it("should not return a json file, if resource contains .", async () => {
+    const response = await request(app).get("/structure/test/exa.mple");
+    const json = JSON.parse(response.text);
+
+    expect(response.status).toEqual(404);
+    expect(response.header["content-type"]).toMatch(/json/);
+    expect(json.status).toEqual("notok");
+    expect(json).toBeDefined();
+  });
+
+  it("should not return a json file, if path contains .", async () => {
+    const response = await request(app).get("/structure/te.st/example");
+    const json = JSON.parse(response.text);
+
+    expect(response.status).toEqual(404);
+    expect(response.header["content-type"]).toMatch(/json/);
+    expect(json.status).toEqual("notok");
+    expect(json).toBeDefined();
+  });
 });
 
 describe("Structure: POST request", () => {
@@ -74,7 +94,7 @@ describe("Structure: DELETE request", () => {
     expect(json.status).toEqual("ok");
   });
 
-  it("should throw an error if the ressource does not exist", async () => {
+  it("should throw an error if the resource does not exist", async () => {
     const response = await request(app).delete(`/structure/test2`);
 
     const json = JSON.parse(response.text);

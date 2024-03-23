@@ -17,7 +17,6 @@ app.use(express.static("static"));
 app.use(express.json());
 
 const guard = (last, path, res) => {
-  // TODO: create test case for path and last with dots
   if (!last || last.includes(".") || (path && path.includes("."))) {
     res.status(404).send({ status: "notok", error: "File not found" });
     return true;
@@ -28,12 +27,9 @@ const guard = (last, path, res) => {
 app.get("/structure/:path*", (req, res) => {
   res.header("Content-Type", "application/json");
   const last = req.params?.path;
-  // TODO: Add path verfication
   const path = req.params[0];
 
   if (guard(last, path, res)) return;
-
-  //TODO: improve error handling
 
   const data = file.read("structure", path, last);
 
