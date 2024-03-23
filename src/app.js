@@ -40,28 +40,60 @@ app.get("/structure/:path*", (req, res) => {
   if (data) {
     res.status(200).send(data);
   } else {
-    res.status(404).send({ status: "notok", error: "File not found" });
+    res.status(404).send({ status: "notok", error: "Resource not found" });
   }
 });
 
-app.post("/structure/:path*", (req, res) => {
+app.post("/structure/:path*", async (req, res) => {
   res.header("Content-Type", "application/json");
 
-  const ressource = req.params?.path;
+  const resource = req.params?.path;
   const path = req.params[0];
 
   const content = JSON.stringify(req.body);
 
-  if (guard(ressource, path, res)) return;
+  if (guard(resource, path, res)) return;
 
   //TODO: verify json content
 
-  // const data = file.read(`structure/${pathParam}`, "structure");
-
-  if (file.write("structure", path, ressource, content)) {
+  if (await file.write("structure", path, resource, content)) {
     res.status(201).send({ status: "ok", content: JSON.parse(content) });
   } else {
-    res.status(404).send({ status: "notok", error: "File not found" });
+    res.status(404).send({ status: "notok", error: "Resource not found" });
+  }
+});
+
+app.put("/structure/:path*", async (req, res) => {
+  res.header("Content-Type", "application/json");
+
+  const resource = req.params?.path;
+  const path = req.params[0];
+
+  const content = JSON.stringify(req.body);
+
+  if (guard(resource, path, res)) return;
+
+  //TODO: verify json content
+
+  if (await file.update("structure", path, resource, content)) {
+    res.status(201).send({ status: "ok", content: JSON.parse(content) });
+  } else {
+    res.status(404).send({ status: "notok", error: "Resource not found" });
+  }
+});
+
+app.delete("/structure/:path*", async (req, res) => {
+  res.header("Content-Type", "application/json");
+
+  const resource = req.params?.path;
+  const path = req.params[0];
+
+  if (guard(resource, path, res)) return;
+
+  if (await file.delete("structure", path, resource)) {
+    res.status(200).send({ status: "ok" });
+  } else {
+    res.status(404).send({ status: "notok", error: "Resource not found" });
   }
 });
 
