@@ -50,3 +50,36 @@ describe("Structure: POST request", () => {
     expect(json.content.value).toEqual("yes");
   });
 });
+
+describe("Structure: PUT request", () => {
+  it("should update a structure", async () => {
+    const data = { value: "yes" };
+
+    const response = await request(app).put(`/structure/test`).send(data);
+    const json = JSON.parse(response.text);
+
+    expect(response.status).toEqual(201);
+    expect(json.status).toEqual("ok");
+    expect(json.content.value).toEqual("yes");
+  });
+});
+
+describe("Structure: DELETE request", () => {
+  it("should delete a structure", async () => {
+    const response = await request(app).delete(`/structure/test`);
+
+    const json = JSON.parse(response.text);
+
+    expect(response.status).toEqual(200);
+    expect(json.status).toEqual("ok");
+  });
+
+  it("should throw an error if the ressource does not exist", async () => {
+    const response = await request(app).delete(`/structure/test2`);
+
+    const json = JSON.parse(response.text);
+
+    expect(response.status).toEqual(404);
+    expect(json.status).toEqual("notok");
+  });
+});
