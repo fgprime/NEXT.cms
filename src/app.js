@@ -16,12 +16,20 @@ logger.log({
 app.use(express.static("static"));
 app.use(express.json());
 
-const guard = (last, path, res) => {
+const guardPath = (last, path, res) => {
   if (!last || last.includes(".") || (path && path.includes("."))) {
     res.status(404).send({ status: "notok", error: "File not found" });
-    return true;
+    return false;
   }
-  return false;
+  return true;
+};
+
+const guardContent = (content, res) => {
+  if (!content) {
+    res.status(400).send({ status: "notok", error: "Invalid content" });
+    return false;
+  }
+  return true;
 };
 
 app.get("/structure/:path*", (req, res) => {
@@ -29,7 +37,7 @@ app.get("/structure/:path*", (req, res) => {
   const last = req.params?.path;
   const path = req.params[0];
 
-  if (guard(last, path, res)) return;
+  if (!guardPath(last, path, res)) return;
 
   const data = file.read("structure", path, last);
 
@@ -46,11 +54,12 @@ app.post("/structure/:path*", async (req, res) => {
   const resource = req.params?.path;
   const path = req.params[0];
 
-  const content = JSON.stringify(req.body);
+  var rawContent = req.body;
 
-  if (guard(resource, path, res)) return;
+  const content = JSON.stringify(rawContent);
 
-  //TODO: verify json content
+  if (!guardPath(resource, path, res)) return;
+  if (!guardContent(content)) return;
 
   if (await file.write("structure", path, resource, content)) {
     res.status(201).send({ status: "ok", content: JSON.parse(content) });
@@ -65,11 +74,12 @@ app.put("/structure/:path*", async (req, res) => {
   const resource = req.params?.path;
   const path = req.params[0];
 
-  const content = JSON.stringify(req.body);
+  var rawContent = req.body;
 
-  if (guard(resource, path, res)) return;
+  const content = JSON.stringify(rawContent);
 
-  //TODO: verify json content
+  if (!guardPath(resource, path, res)) return;
+  if (!guardContent(content)) return;
 
   if (await file.update("structure", path, resource, content)) {
     res.status(201).send({ status: "ok", content: JSON.parse(content) });
@@ -84,7 +94,7 @@ app.delete("/structure/:path*", async (req, res) => {
   const resource = req.params?.path;
   const path = req.params[0];
 
-  if (guard(resource, path, res)) return;
+  if (!guardPath(resource, path, res)) return;
 
   if (await file.delete("structure", path, resource)) {
     res.status(200).send({ status: "ok" });
