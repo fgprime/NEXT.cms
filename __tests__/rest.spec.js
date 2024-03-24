@@ -69,6 +69,17 @@ describe("Structure: POST request", () => {
     expect(json.status).toEqual("ok");
     expect(json.content.value).toEqual("yes");
   });
+
+  it("should not update an existing structure", async () => {
+    const data = { value: "yes" };
+
+    const response = await request(app).post(`/structure/test`).send(data);
+    const json = JSON.parse(response.text);
+
+    expect(response.status).toEqual(409);
+    expect(json.status).toEqual("notok");
+    expect(json.error.includes("exists")).toEqual(true);
+  });
 });
 
 describe("Structure: PUT request", () => {
