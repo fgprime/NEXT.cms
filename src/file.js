@@ -1,8 +1,8 @@
 const fsp = require("fs").promises;
 const { existsSync } = require("fs");
-
 const logger = require("./logger");
 
+const RESULT = require("./file-result");
 const DATA_PATH = "data";
 
 function doesFileExist(path) {
@@ -26,7 +26,7 @@ const fileModule = {
       );
     } catch (err) {
       logger.error(`Error reading file ${path}`, err);
-      return false;
+      return RESULT.error;
     }
   },
 
@@ -34,9 +34,8 @@ const fileModule = {
     const targetPath = `./${DATA_PATH}/${section}${path}`;
     const targetResource = `${targetPath}/${resource}.json`;
 
-    //TODO: check correct status code if write is not possible
     if (doesFileExist(targetResource)) {
-      return false;
+      return RESULT.exist;
     }
 
     try {
@@ -48,10 +47,10 @@ const fileModule = {
           });
       }
       await fsp.writeFile(`${targetPath}/${resource}.json`, content);
-      return true;
+      return RESULT.success;
     } catch (err) {
       logger.error(`Error writing file ${targetPath}}`, err);
-      return false;
+      return RESULT.error;
     }
   },
 
@@ -61,13 +60,13 @@ const fileModule = {
     try {
       if (doesFileExist(targetResource)) {
         await fsp.writeFile(`${targetPath}/${resource}.json`, content);
-        return true;
+        return RESULT.success;
       } else {
-        return false;
+        return RESULT.error;
       }
     } catch (err) {
       logger.error(`Error updating file ${targetResource}}`, err);
-      return false;
+      return RESULT.error;
     }
   },
 
@@ -76,13 +75,13 @@ const fileModule = {
     try {
       if (doesFileExist(targetResource)) {
         await fsp.unlink(targetResource);
-        return true;
+        return RESULT.success;
       } else {
-        return false;
+        return RESULT.error;
       }
     } catch (err) {
       logger.error(`Error deleting file ${targetResource}`, err);
-      return false;
+      return RESULT.error;
     }
   },
 };
