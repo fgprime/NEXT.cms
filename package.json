@@ -1,6 +1,9 @@
 {
   "name": "NEXT.cms",
   "packageManager": "yarn@4.0.2",
+  "scripts": {
+    "test": "jest --watchAll --watchPathIgnorePatterns 'data'"
+  },
   "dependencies": {
     "express": "^4.19.1",
     "winston": "^3.12.0"
