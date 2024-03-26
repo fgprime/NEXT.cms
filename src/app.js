@@ -9,6 +9,8 @@ const RESULT = require("./file-result");
 
 const logger = require("./logger");
 
+const error = require("./error");
+
 logger.log({
   level: "info",
   message: "⚡️ Application is starting",
@@ -112,5 +114,7 @@ app.delete("/structure/:path*", async (req, res) => {
     res.status(404).send({ status: "notok", error: "Resource not found" });
   }
 });
+
+app.use(error);
 
 module.exports = app;
