@@ -2,8 +2,10 @@ const fsp = require("fs").promises;
 const { existsSync } = require("fs");
 const logger = require("./logger");
 
-const RESULT = require("./file-result");
 const DATA_PATH = "data";
+const RESULT = require("./file-result");
+const READ_OPTIONS = { encoding: "utf8" };
+const WRITE_OPTIONS = { encoding: "utf8", flush: true };
 
 function doesFileExist(path) {
   try {
@@ -23,6 +25,7 @@ const fileModule = {
     try {
       return await fsp.readFile(
         `${DATA_PATH}/${section}${path}/${ressource}.json`,
+        READ_OPTIONS,
       );
     } catch (err) {
       logger.error(`Error reading file ${path}`, err);
@@ -46,7 +49,12 @@ const fileModule = {
             message: "Directory was not created",
           });
       }
-      await fsp.writeFile(`${targetPath}/${resource}.json`, content);
+
+      await fsp.writeFile(
+        `${targetPath}/${resource}.json`,
+        content,
+        WRITE_OPTIONS,
+      );
       return RESULT.success;
     } catch (err) {
       logger.error(`Error writing file ${targetPath}}`, err);
@@ -59,7 +67,11 @@ const fileModule = {
     const targetResource = `${targetPath}/${resource}.json`;
     try {
       if (doesFileExist(targetResource)) {
-        await fsp.writeFile(`${targetPath}/${resource}.json`, content);
+        await fsp.writeFile(
+          `${targetPath}/${resource}.json`,
+          content,
+          WRITE_OPTIONS,
+        );
         return RESULT.success;
       } else {
         return RESULT.error;
