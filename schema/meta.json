@@ -1,0 +1,23 @@
+{
+  "title": "schema",
+  "anyOf": [
+    {
+      "type": "string"
+    },
+    {
+      "type": "number"
+    },
+    {
+      "type": "integer"
+    },
+    {
+      "type": "boolean"
+    },
+    {
+      "type": "array"
+    },
+    {
+      "$ref": ""
+    }
+  ]
+}
