@@ -7,17 +7,14 @@ const path = require("path");
 const file = require("./file");
 const RESULT = require("./file-result");
 
-const logger = require("./logger");
+const { logger, start } = require("./logger");
 
 const error = require("./error");
 
-logger.log({
-  level: "info",
-  message: "⚡️ Application is starting",
-});
-
 app.use(express.static("static"));
 app.use(express.json());
+
+start();
 
 const guardPath = (last, path, res) => {
   if (!last || last.includes(".") || (path && path.includes("."))) {

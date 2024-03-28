@@ -19,4 +19,11 @@ if (process.env.NODE_ENV !== "production" && process.env.NODE_ENV !== "test") {
   );
 }
 
-module.exports = logger;
+const start = () => {
+  logger.log({
+    level: "info",
+    message: "⚡️ Application is starting",
+  });
+};
+
+module.exports = { logger, start };

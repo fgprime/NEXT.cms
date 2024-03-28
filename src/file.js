@@ -1,6 +1,6 @@
 const fsp = require("fs").promises;
 const { existsSync } = require("fs");
-const logger = require("./logger");
+const { logger } = require("./logger");
 
 const DATA_PATH = "data";
 const RESULT = require("./file-result");
