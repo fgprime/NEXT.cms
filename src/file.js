@@ -4,8 +4,7 @@ const { logger } = require("./logger");
 
 const DATA_PATH = "data";
 const RESULT = require("./file-result");
-const READ_OPTIONS = { encoding: "utf8" };
-const WRITE_OPTIONS = { encoding: "utf8", flush: true };
+const { READ_OPTIONS, WRITE_OPTIONS } = require("./file-options");
 
 function doesFileExist(path) {
   try {
