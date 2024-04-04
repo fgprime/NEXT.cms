@@ -3,13 +3,19 @@ const app = express();
 
 const fs = require("fs");
 const path = require("path");
-
 const file = require("./file");
 const RESULT = require("./file-result");
+const error = require("./error");
 
 const { logger, start } = require("./logger");
+const {
+  OK,
+  NOT_FOUND,
+  CREATED,
+  CONFLICT,
+  BAD_REQUEST,
+} = require("./http-status");
 
-const error = require("./error");
 
 app.use(express.static("static"));
 app.use(express.json());
@@ -18,7 +24,7 @@ start();
 
 const guardPath = (last, path, res) => {
   if (!last || last.includes(".") || (path && path.includes("."))) {
-    res.status(404).send({ status: "notok", error: "File not found" });
+    res.status(NOT_FOUND).send({ status: "notok", error: "File not found" });
     return false;
   }
   return true;
@@ -26,7 +32,7 @@ const guardPath = (last, path, res) => {
 
 const guardContent = (content, res) => {
   if (!content) {
-    res.status(400).send({ status: "notok", error: "Invalid content" });
+    res.status(BAD_REQUEST).send({ status: "notok", error: "Invalid content" });
     return false;
   }
   return true;
@@ -42,9 +48,11 @@ app.get("/structure/:path*", (req, res) => {
   const data = file.read("structure", path, last);
 
   if (data !== RESULT.error) {
-    res.status(200).send(data);
+    res.status(OK).send(data);
   } else {
-    res.status(404).send({ status: "notok", error: "Resource not found" });
+    res
+      .status(NOT_FOUND)
+      .send({ status: "notok", error: "Resource not found" });
   }
 });
 
@@ -64,13 +72,15 @@ app.post("/structure/:path*", async (req, res) => {
   const result = await file.write("structure", path, resource, content);
 
   if (result === RESULT.success) {
-    res.status(201).send({ status: "ok", content: JSON.parse(content) });
+    res.status(CREATED).send({ status: "ok", content: JSON.parse(content) });
   } else if (result === RESULT.exist) {
     res
-      .status(409)
+      .status(CONFLICT)
       .send({ status: "notok", error: "Ressource exists already" });
   } else {
-    res.status(404).send({ status: "notok", error: "Resource not found" });
+    res
+      .status(NOT_FOUND)
+      .send({ status: "notok", error: "Resource not found" });
   }
 });
 
@@ -89,9 +99,11 @@ app.put("/structure/:path*", async (req, res) => {
 
   const result = await file.update("structure", path, resource, content);
   if (result === RESULT.success) {
-    res.status(201).send({ status: "ok", content: JSON.parse(content) });
+    res.status(CREATED).send({ status: "ok", content: JSON.parse(content) });
   } else {
-    res.status(404).send({ status: "notok", error: "Resource not found" });
+    res
+      .status(NOT_FOUND)
+      .send({ status: "notok", error: "Resource not found" });
   }
 });
 
@@ -106,9 +118,11 @@ app.delete("/structure/:path*", async (req, res) => {
   const result = await file.delete("structure", path, resource);
 
   if (result === RESULT.success) {
-    res.status(200).send({ status: "ok" });
+    res.status(OK).send({ status: "ok" });
   } else {
-    res.status(404).send({ status: "notok", error: "Resource not found" });
+    res
+      .status(NOT_FOUND)
+      .send({ status: "notok", error: "Resource not found" });
   }
 });
 
