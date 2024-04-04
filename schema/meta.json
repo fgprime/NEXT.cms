@@ -1,23 +1,18 @@
 {
-  "title": "schema",
-  "anyOf": [
-    {
-      "type": "string"
+  "$id": "meta",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "key": { "type": "string" },
+      "type": { "enum": ["string", "boolean", "number", "block"] },
+      "value": { "type": "string" },
+      "description": { "type": "string" },
+      "children": {
+        "$ref": "meta"
+      }
     },
-    {
-      "type": "number"
-    },
-    {
-      "type": "integer"
-    },
-    {
-      "type": "boolean"
-    },
-    {
-      "type": "array"
-    },
-    {
-      "$ref": ""
-    }
-  ]
+    "required": ["key", "type"],
+    "additionalProperties": false
+  }
 }
