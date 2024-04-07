@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
 const app = express();
 
 const fs = require("fs");
@@ -18,6 +19,7 @@ const {
 } = require("./http-status");
 
 
+app.use(helmet());
 // FIXME: set origin via env
 app.use(
   cors({
