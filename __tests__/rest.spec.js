@@ -114,3 +114,14 @@ describe("Structure: DELETE request", () => {
     expect(json.status).toEqual("notok");
   });
 });
+
+describe("Generic 404", () => {
+  it("should send a 404 error if the resource does not exist", async () => {
+    const response = await request(app).get(`/abcdefg`);
+
+    const json = JSON.parse(response.text);
+
+    expect(response.status).toEqual(404);
+    expect(json.status).toEqual("notok");
+  });
+});
