@@ -8,8 +8,10 @@ const path = require("path");
 const file = require("./file");
 const RESULT = require("./file-result");
 const error = require("./error");
+const notfound = require("./notfound");
 
-const { logger, start } = require("./logger");
+const { start } = require("./logger");
+
 const {
   OK,
   NOT_FOUND,
@@ -136,5 +138,6 @@ app.delete("/structure/:path*", async (req, res) => {
 });
 
 app.use(error);
+app.use(notfound);
 
 module.exports = app;
